@@ -110,6 +110,12 @@ static THD_FUNCTION(ppm_thread, arg) {
 			return;
 		}
 
+		if (timeout_has_timeout() || servodec_get_time_since_update() > timeout_get_timeout_msec() ||
+				mc_interface_get_fault() != FAULT_CODE_NONE) {
+			pulses_without_power = 0;
+			continue;
+		}
+
 		if (ppm_rx) {
 			ppm_rx = false;
 			timeout_reset();
